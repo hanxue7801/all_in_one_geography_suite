@@ -276,7 +276,7 @@
 
   <script>
 /* ========================================================================
- * 🔒 地球运动3D物理引擎（自转与公转双核心） - 商业授权保护与买家防录屏水印溯源系统
+ * 🔒 地球运动3D物理引擎（自转与公转双核心） - 商业授权保护与隐私安全掩码系统
  * 版权所有 (C) 商业授课课件知识产权保护 · 未经授权严禁使用
  * ======================================================================== */
 (function() {
@@ -308,10 +308,24 @@
     }
   }, true);
 
-  // ================= 激活码校验与弹窗逻辑 =================
+  // ================= 激活码校验与脱敏掩码逻辑 =================
   const _AUTH_STORAGE_KEY = 'GEO_SUITE_LICENSED_AUTH';
   const _AUTH_SALT = 'GEO_PRO_2026_AUTHORIZE_SECRET';
   const _MASTER_PINS = ['GEO888', 'TEACH2026', '668899'];
+
+  // 卡密脱敏掩码函数：如 GEO-13Z8YC-29C7 => GEO-13****-29C7
+  function _maskKey(key) {
+    if (!key) return '';
+    const clean = key.trim().toUpperCase();
+    if (_MASTER_PINS.includes(clean)) return 'GEO-******';
+    const parts = clean.split('-');
+    if (parts.length === 3) {
+      const middle = parts[1];
+      const maskedMiddle = middle.length > 2 ? middle.substring(0, 2) + '****' : '****';
+      return parts[0] + '-' + maskedMiddle + '-' + parts[2];
+    }
+    return clean.length > 4 ? clean.substring(0, 3) + '****' : '****';
+  }
 
   async function _sha256Hex(str) {
     const buffer = new TextEncoder().encode(str);
@@ -333,14 +347,14 @@
     return parts[2] === expectedChk;
   }
 
-  // 注入常驻防录屏版权溯源水印
+  // 注入右上角极微弱极小水印（脱敏，纯净授课）
   function _injectWatermark(key) {
     if (document.getElementById('geo-watermark-tag')) return;
     const mark = document.createElement('div');
     mark.id = 'geo-watermark-tag';
-    mark.style.cssText = 'position:fixed;bottom:12px;right:16px;z-index:99999;display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(2,6,23,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(51,65,85,0.6);border-radius:9999px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;font-size:11px;color:rgba(148,163,184,0.85);letter-spacing:0.04em;pointer-events:none;user-select:none;box-shadow:0 4px 12px rgba(0,0,0,0.4);';
-    mark.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>' +
-                     '<span>正版授权 · </span><span style="color:#f59e0b;font-weight:700;">' + key + '</span>';
+    mark.style.cssText = 'position:fixed;bottom:10px;right:14px;z-index:99999;display:flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(2,6,23,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(51,65,85,0.4);border-radius:9999px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;font-size:10px;color:rgba(148,163,184,0.65);letter-spacing:0.02em;pointer-events:none;user-select:none;';
+    mark.innerHTML = '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></span>' +
+                     '<span>已授权 · </span><span style="color:#94a3b8;font-weight:600;">' + _maskKey(key) + '</span>';
     document.body.appendChild(mark);
   }
 
@@ -361,8 +375,11 @@
         </p>
 
         <div style="margin-bottom:16px;text-align:left;">
-          <input id="geo-license-input" type="text" placeholder="输入卡密 (如 GEO-XXXXXX-XXXX)" 
-                 style="width:100%;background:#020617;border:2px solid #334155;border-radius:14px;padding:14px 16px;color:#f8fafc;font-size:14px;font-family:monospace;text-align:center;outline:none;transition:border-color 0.2s;box-sizing:border-box;" />
+          <div style="position:relative;width:100%;">
+            <input id="geo-license-input" type="password" placeholder="输入卡密 (如 GEO-XXXXXX-XXXX)" 
+                   style="width:100%;background:#020617;border:2px solid #334155;border-radius:14px;padding:14px 44px 14px 16px;color:#f8fafc;font-size:14px;font-family:monospace;text-align:center;outline:none;transition:border-color 0.2s;box-sizing:border-box;" />
+            <button id="geo-toggle-pwd" type="button" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#64748b;font-size:16px;cursor:pointer;padding:4px;" title="显示/隐藏卡密">👁️</button>
+          </div>
           <div id="geo-license-err" style="display:none;color:#f87171;font-size:12px;margin-top:8px;font-weight:600;text-align:center;">⚠️ 激活码无效或输入有误，请核实后重试</div>
         </div>
 
@@ -381,6 +398,17 @@
     const input = document.getElementById('geo-license-input');
     const btn = document.getElementById('geo-license-btn');
     const err = document.getElementById('geo-license-err');
+    const toggleBtn = document.getElementById('geo-toggle-pwd');
+
+    toggleBtn.addEventListener('click', () => {
+      if (input.type === 'password') {
+        input.type = 'text';
+        toggleBtn.style.color = '#f59e0b';
+      } else {
+        input.type = 'password';
+        toggleBtn.style.color = '#64748b';
+      }
+    });
 
     input.addEventListener('focus', () => { input.style.borderColor = '#f59e0b'; });
     input.addEventListener('blur', () => { input.style.borderColor = '#334155'; });

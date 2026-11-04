@@ -52,7 +52,7 @@
       </a>
     </div>
 
-    <!-- 授权状态状态栏 -->
+    <!-- 授权状态状态栏：安全脱敏设计 -->
     <div id="auth-status-bar" class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
       <div class="flex items-center gap-2">
         <span id="auth-icon">🔒</span>
@@ -68,11 +68,44 @@
     </div>
   </div>
 
+  <!-- 自定义弹窗支持密文输入与眼睛切换 -->
+  <div id="custom-auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
+      <div class="text-center">
+        <div class="text-3xl mb-2">🔑</div>
+        <h3 class="text-base font-bold text-white">输入正版激活码</h3>
+        <p class="text-xs text-slate-400 mt-1">输入卡密解锁全部 3D 课件功能</p>
+      </div>
+      <div class="relative">
+        <input id="modal-key-input" type="password" placeholder="输入卡密 (如 GEO-XXXXXX-XXXX)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 pr-10 focus:outline-none focus:border-amber-500 font-mono text-center">
+        <button id="modal-toggle-eye" type="button" class="absolute right-3 top-2.5 text-slate-400 hover:text-amber-400 text-sm">👁️</button>
+      </div>
+      <div id="modal-err-msg" class="text-red-400 text-xs text-center hidden">⚠️ 卡密无效，请重新核实</div>
+      <div class="flex gap-2">
+        <button id="modal-cancel-btn" class="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium">取消</button>
+        <button id="modal-confirm-btn" class="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs text-slate-950 font-bold">验证激活</button>
+      </div>
+    </div>
+  </div>
+
   <script>
   (function() {
     const STORAGE_KEY = 'GEO_SUITE_LICENSED_AUTH';
     const SALT = 'GEO_PRO_2026_AUTHORIZE_SECRET';
     const MASTER_PINS = ['GEO888', 'TEACH2026', '668899'];
+
+    function maskKey(key) {
+      if (!key) return '';
+      const clean = key.trim().toUpperCase();
+      if (MASTER_PINS.includes(clean)) return 'GEO-******';
+      const parts = clean.split('-');
+      if (parts.length === 3) {
+        const middle = parts[1];
+        const masked = middle.length > 2 ? middle.substring(0, 2) + '****' : '****';
+        return parts[0] + '-' + masked + '-' + parts[2];
+      }
+      return clean.length > 4 ? clean.substring(0, 3) + '****' : '****';
+    }
 
     async function sha256(str) {
       const buf = new TextEncoder().encode(str);
@@ -93,12 +126,18 @@
     const authText = document.getElementById('auth-text');
     const authIcon = document.getElementById('auth-icon');
     const authBtn = document.getElementById('auth-action-btn');
+    const modal = document.getElementById('custom-auth-modal');
+    const modalInput = document.getElementById('modal-key-input');
+    const modalEye = document.getElementById('modal-toggle-eye');
+    const modalErr = document.getElementById('modal-err-msg');
+    const modalConfirm = document.getElementById('modal-confirm-btn');
+    const modalCancel = document.getElementById('modal-cancel-btn');
 
     async function checkState() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved && await verifyKey(saved)) {
         authIcon.innerText = '✅';
-        authText.innerHTML = '<span class="text-emerald-400 font-bold">正版授权已激活</span> · 凭证：<span class="font-mono text-amber-400 font-bold">' + saved + '</span>';
+        authText.innerHTML = '<span class="text-emerald-400 font-bold">正版授权已激活</span> <span class="text-slate-500 font-mono">(' + maskKey(saved) + ')</span>';
         authBtn.innerText = '更换激活码';
         authBtn.className = 'px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition';
       } else {
@@ -109,17 +148,51 @@
       }
     }
 
-    authBtn.addEventListener('click', async () => {
-      const code = prompt('请输入正版激活码或卡密 (如 GEO-XXXXXX-XXXX)：');
-      if (code) {
-        if (await verifyKey(code)) {
-          localStorage.setItem(STORAGE_KEY, code.trim().toUpperCase());
-          alert('🎉 激活成功！全部 3D 课件已解锁，欢迎使用！');
-          checkState();
-        } else {
-          alert('❌ 激活码无效，请检查是否输入有误或联系客服获取。');
-        }
+    authBtn.addEventListener('click', () => {
+      modalInput.value = '';
+      modalInput.type = 'password';
+      modalErr.classList.add('hidden');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      modalInput.focus();
+    });
+
+    modalCancel.addEventListener('click', () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+
+    modalEye.addEventListener('click', () => {
+      if (modalInput.type === 'password') {
+        modalInput.type = 'text';
+        modalEye.classList.add('text-amber-400');
+      } else {
+        modalInput.type = 'password';
+        modalEye.classList.remove('text-amber-400');
       }
+    });
+
+    async function handleModalSubmit() {
+      const val = modalInput.value.trim().toUpperCase();
+      if (!val) return;
+      modalConfirm.innerText = '正在校验...';
+      const valid = await verifyKey(val);
+      if (valid) {
+        localStorage.setItem(STORAGE_KEY, val);
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modalConfirm.innerText = '验证激活';
+        checkState();
+      } else {
+        modalConfirm.innerText = '验证激活';
+        modalErr.classList.remove('hidden');
+        modalInput.focus();
+      }
+    }
+
+    modalConfirm.addEventListener('click', handleModalSubmit);
+    modalInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleModalSubmit();
     });
 
     checkState();
