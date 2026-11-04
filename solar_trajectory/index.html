@@ -471,12 +471,12 @@
     return parts[2] === expectedChk;
   }
 
-  // 注入【右上角】脱敏水印标签：显示如 GEO-xxxxxx-29C7
+  // 注入水印标签：位于“当前视角：立竿见影·加粗日轨”正下方（top: 92px, right: 16px）
   function _injectWatermark(key) {
     if (document.getElementById('geo-watermark-tag')) return;
     const mark = document.createElement('div');
     mark.id = 'geo-watermark-tag';
-    mark.style.cssText = 'position:fixed;top:10px;right:14px;z-index:99999;display:flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(2,6,23,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(51,65,85,0.6);border-radius:9999px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;font-size:11px;color:rgba(148,163,184,0.85);letter-spacing:0.03em;pointer-events:none;user-select:none;box-shadow:0 4px 12px rgba(0,0,0,0.4);';
+    mark.style.cssText = 'position:fixed;top:108px;right:16px;z-index:99999;display:flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(2,6,23,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(51,65,85,0.7);border-radius:9999px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;font-size:11px;color:rgba(148,163,184,0.9);letter-spacing:0.03em;pointer-events:none;user-select:none;box-shadow:0 4px 14px rgba(0,0,0,0.5);';
     mark.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>' +
                      '<span>正版授权 · </span><span style="color:#f59e0b;font-weight:700;">' + _formatWatermarkKey(key) + '</span>';
     document.body.appendChild(mark);

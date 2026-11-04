@@ -14,76 +14,90 @@
       <p class="text-slate-400 text-sm">正版商业授课版 · 点击下方卡片进入对应 3D 引擎</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-      <!-- Card 1 -->
-      <a href="solar_trajectory/index.html" class="group block p-5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-amber-500/80 transition-all hover:scale-[1.02] shadow-lg">
-        <div class="flex items-center gap-3 mb-3">
-          <span class="text-2xl p-2 rounded-xl bg-amber-500/10 text-amber-400">🏛️</span>
-          <div>
-            <h2 class="text-base font-bold text-white group-hover:text-amber-400 transition">太阳视运动大屏观测台</h2>
-            <span class="text-xs text-amber-300/80 font-mono">地平天穹 · 日晷测影 · 纬度联动</span>
-          </div>
+    <!-- 授权状态条 -->
+    <div id="auth-status-bar" class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span id="auth-icon" class="text-2xl">🔒</span>
+        <div>
+          <div id="auth-title" class="font-bold text-sm text-slate-200">授权状态检查中...</div>
+          <div id="auth-desc" class="text-xs text-slate-400 font-mono">请稍候</div>
         </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          地平面天球视界、1m标杆实时投影计算、夏至/二分/冬至三维日轨高显、中国六大典型纬度带与平铺世界地图实时联动。
-        </p>
-        <div class="mt-4 flex items-center text-xs font-bold text-amber-400 gap-1">
+      </div>
+      <button id="auth-action-btn" class="px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg">
+        检查状态
+      </button>
+    </div>
+
+    <!-- 课件矩阵导航 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- 课件 1: 太阳视运动 -->
+      <a href="solar_trajectory/index.html" class="group bg-gradient-to-b from-slate-800/80 to-slate-900 border border-slate-700/80 hover:border-amber-500/80 rounded-2xl p-5 transition transform hover:-translate-y-1 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl">☀️</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">教学高频</span>
+          </div>
+          <h2 class="text-lg font-black text-white group-hover:text-amber-300 transition">太阳视运动规律与全球联动观测台</h2>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            地面地平天球视界 · 太阳直射联动 · 漠河/北京/上海/广州/曾母暗沙典型纬度日轨变化 · 日影朝向与长短演变。
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-amber-400">
           <span>进入观测台</span>
           <span>→</span>
         </div>
       </a>
 
-      <!-- Card 2 -->
-      <a href="earth_revolution/index.html" class="group block p-5 rounded-2xl bg-slate-950/80 border border-slate-800 hover:border-cyan-500/80 transition-all hover:scale-[1.02] shadow-lg">
-        <div class="flex items-center gap-3 mb-3">
-          <span class="text-2xl p-2 rounded-xl bg-cyan-500/10 text-cyan-400">🪐</span>
-          <div>
-            <h2 class="text-base font-bold text-white group-hover:text-cyan-400 transition">地球运动 3D 物理引擎</h2>
-            <span class="text-xs text-cyan-300/80 font-mono">公转引擎 · 自转引擎 · 二分二至</span>
+      <!-- 课件 2: 地球自转公转 -->
+      <a href="earth_revolution/index.html" class="group bg-gradient-to-b from-slate-800/80 to-slate-900 border border-slate-700/80 hover:border-cyan-500/80 rounded-2xl p-5 transition transform hover:-translate-y-1 shadow-lg flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl">🌍</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">核心双引擎</span>
           </div>
+          <h2 class="text-lg font-black text-white group-hover:text-cyan-300 transition">地球运动3D物理引擎</h2>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+            自转与公转双核心 · 立体加厚红赤道 · 超显眼高亮二分二至按键 · 地轴平行永指北极星 · 太阳直射点动态追踪。
+          </p>
         </div>
-        <p class="text-xs text-slate-400 leading-relaxed">
-          3D立体加厚鲜红赤道圈、二分二至地轴空间平行永指北极星演示、太阳直射点动态轨迹、北逆南顺极点俯视视角。
-        </p>
-        <div class="mt-4 flex items-center text-xs font-bold text-cyan-400 gap-1">
+        <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-cyan-400">
           <span>进入物理引擎</span>
           <span>→</span>
         </div>
       </a>
     </div>
 
-    <!-- 授权状态状态栏：同样格式化为 GEO-xxxxxx-29C7 -->
-    <div id="auth-status-bar" class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
-      <div class="flex items-center gap-2">
-        <span id="auth-icon">🔒</span>
-        <span id="auth-text">当前设备授权状态：正在检测...</span>
-      </div>
-      <button id="auth-action-btn" class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 font-bold transition">
-        输入激活码
-      </button>
-    </div>
-
-    <div class="text-center text-xs text-slate-500 pt-2 border-t border-slate-800 flex items-center justify-center gap-2">
-      <span>🛡️ 已启用双核知识产权防篡改与离线激活码授权体系</span>
+    <!-- 底部版权声明 -->
+    <div class="text-center text-[11px] text-slate-500 space-y-1">
+      <p>高中地理教学虚拟实验项目组 · 商业教学知识产权保护</p>
+      <p>每个授权码绑定专属数字防伪水印，严禁未经授权录屏倒卖、二传或网络公开散布</p>
     </div>
   </div>
 
-  <!-- 自定义弹窗支持密文输入与眼睛切换 -->
-  <div id="custom-auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-      <div class="text-center">
-        <div class="text-3xl mb-2">🔑</div>
-        <h3 class="text-base font-bold text-white">输入正版激活码</h3>
-        <p class="text-xs text-slate-400 mt-1">输入卡密解锁全部 3D 课件功能</p>
-      </div>
+  <!-- 激活码输入弹窗 -->
+  <div id="license-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <h3 class="text-lg font-black text-white flex items-center gap-2">
+        <span>🔐</span><span>输入正版授权激活码</span>
+      </h3>
+      <p class="text-xs text-slate-400">
+        请输入您购买的专属激活码（格式如：GEO-XXXXXX-XXXX）。激活后将永久绑定当前浏览器。
+      </p>
       <div class="relative">
-        <input id="modal-key-input" type="password" placeholder="输入卡密 (如 GEO-XXXXXX-XXXX)" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 pr-10 focus:outline-none focus:border-amber-500 font-mono text-center">
-        <button id="modal-toggle-eye" type="button" class="absolute right-3 top-2.5 text-slate-400 hover:text-amber-400 text-sm">👁️</button>
+        <input id="license-modal-input" type="password" placeholder="GEO-XXXXXX-XXXX" 
+               class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm font-mono text-center text-white focus:outline-none focus:border-amber-500" />
+        <button id="license-modal-eye" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">👁️</button>
       </div>
-      <div id="modal-err-msg" class="text-red-400 text-xs text-center hidden">⚠️ 卡密无效，请重新核实</div>
+      <div id="license-modal-error" class="hidden text-xs text-red-400 font-bold text-center">
+        ⚠️ 激活码无效，请检查大小写或连字符
+      </div>
       <div class="flex gap-2">
-        <button id="modal-cancel-btn" class="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-medium">取消</button>
-        <button id="modal-confirm-btn" class="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs text-slate-950 font-bold">验证激活</button>
+        <button id="license-modal-cancel" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
+          取消
+        </button>
+        <button id="license-modal-confirm" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20">
+          验证激活
+        </button>
       </div>
     </div>
   </div>
@@ -94,7 +108,7 @@
     const SALT = 'GEO_PRO_2026_AUTHORIZE_SECRET';
     const MASTER_PINS = ['GEO888', 'TEACH2026', '668899'];
 
-    function formatWatermarkKey(key) {
+    function formatDisplayKey(key) {
       if (!key) return 'GEO-xxxxxx-AUTH';
       const clean = key.trim().toUpperCase();
       if (MASTER_PINS.includes(clean)) return 'GEO-xxxxxx-8888';
@@ -108,42 +122,51 @@
       return 'GEO-xxxxxx-29C7';
     }
 
-    async function sha256(str) {
-      const buf = new TextEncoder().encode(str);
-      const hBuf = await crypto.subtle.digest('SHA-256', buf);
-      return Array.from(new Uint8Array(hBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    async function sha256Hex(str) {
+      const buffer = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
     async function verifyKey(key) {
       if (!key) return false;
-      const k = key.trim().toUpperCase();
-      if (MASTER_PINS.includes(k)) return true;
-      const parts = k.split('-');
+      const cleanKey = key.trim().toUpperCase();
+      if (MASTER_PINS.includes(cleanKey)) return true;
+      const parts = cleanKey.split('-');
       if (parts.length !== 3 || parts[0] !== 'GEO') return false;
-      const hash = await sha256(parts[1] + '-' + SALT);
-      return parts[2] === hash.substring(0, 4).toUpperCase();
+      const raw = parts[1] + '-' + SALT;
+      const hash = await sha256Hex(raw);
+      const expectedChk = hash.substring(0, 4).toUpperCase();
+      return parts[2] === expectedChk;
     }
 
-    const authText = document.getElementById('auth-text');
+    const authBar = document.getElementById('auth-status-bar');
     const authIcon = document.getElementById('auth-icon');
+    const authTitle = document.getElementById('auth-title');
+    const authDesc = document.getElementById('auth-desc');
     const authBtn = document.getElementById('auth-action-btn');
-    const modal = document.getElementById('custom-auth-modal');
-    const modalInput = document.getElementById('modal-key-input');
-    const modalEye = document.getElementById('modal-toggle-eye');
-    const modalErr = document.getElementById('modal-err-msg');
-    const modalConfirm = document.getElementById('modal-confirm-btn');
-    const modalCancel = document.getElementById('modal-cancel-btn');
+
+    const modal = document.getElementById('license-modal');
+    const modalInput = document.getElementById('license-modal-input');
+    const modalConfirm = document.getElementById('license-modal-confirm');
+    const modalCancel = document.getElementById('license-modal-cancel');
+    const modalEye = document.getElementById('license-modal-eye');
+    const modalErr = document.getElementById('license-modal-error');
 
     async function checkState() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved && await verifyKey(saved)) {
+      const key = localStorage.getItem(STORAGE_KEY);
+      if (key && await verifyKey(key)) {
         authIcon.innerText = '✅';
-        authText.innerHTML = '<span class="text-emerald-400 font-bold">正版授权已激活</span> · 凭证：<span class="font-mono text-amber-400 font-bold">' + formatWatermarkKey(saved) + '</span>';
+        authTitle.innerHTML = '<span class="text-emerald-400 font-bold">正版商业授权生效中</span>';
+        authDesc.innerHTML = '已绑定激活码: <span class="text-amber-400 font-bold">' + formatDisplayKey(key) + '</span> (已脱敏)';
         authBtn.innerText = '更换激活码';
-        authBtn.className = 'px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition';
+        authBtn.className = 'px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs font-medium border border-slate-700 transition';
       } else {
         authIcon.innerText = '🔒';
-        authText.innerHTML = '<span class="text-amber-400 font-bold">尚未激活</span> · 请输入正版卡密解锁课件';
+        authText = authTitle;
+        authTitle.innerHTML = '<span class="text-amber-400 font-bold">尚未激活</span> · 请输入正版卡密解锁课件';
+        authDesc.innerText = '未激活状态下进入课件将弹出全屏安全锁';
         authBtn.innerText = '立即激活';
         authBtn.className = 'px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 hover:bg-amber-400 font-bold transition shadow-lg shadow-amber-500/20';
       }
