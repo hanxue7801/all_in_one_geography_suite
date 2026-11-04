@@ -399,7 +399,7 @@
   <!-- SCRIPT ENGINE -->
   <script>
 /* ========================================================================
- * 🔒 太阳视运动规律与全球联动解析大屏教学观测台 - 商业授权保护与隐私安全掩码系统
+ * 🔒 太阳视运动规律与全球联动解析大屏教学观测台 - 商业授权保护与买家防录屏水印溯源系统
  * 版权所有 (C) 商业授课课件知识产权保护 · 未经授权严禁使用
  * ======================================================================== */
 (function() {
@@ -431,23 +431,24 @@
     }
   }, true);
 
-  // ================= 激活码校验与脱敏掩码逻辑 =================
+  // ================= 激活码校验与脱敏格式化逻辑 =================
   const _AUTH_STORAGE_KEY = 'GEO_SUITE_LICENSED_AUTH';
   const _AUTH_SALT = 'GEO_PRO_2026_AUTHORIZE_SECRET';
   const _MASTER_PINS = ['GEO888', 'TEACH2026', '668899'];
 
-  // 卡密脱敏掩码函数：如 GEO-13Z8YC-29C7 => GEO-13****-29C7
-  function _maskKey(key) {
-    if (!key) return '';
+  // 严格格式化为：GEO-xxxxxx-后4位 (中间6位脱敏为小写xxxxxx，后4位明文溯源)
+  function _formatWatermarkKey(key) {
+    if (!key) return 'GEO-xxxxxx-AUTH';
     const clean = key.trim().toUpperCase();
-    if (_MASTER_PINS.includes(clean)) return 'GEO-******';
+    if (_MASTER_PINS.includes(clean)) return 'GEO-xxxxxx-8888';
     const parts = clean.split('-');
     if (parts.length === 3) {
-      const middle = parts[1];
-      const maskedMiddle = middle.length > 2 ? middle.substring(0, 2) + '****' : '****';
-      return parts[0] + '-' + maskedMiddle + '-' + parts[2];
+      return parts[0] + '-xxxxxx-' + parts[2];
     }
-    return clean.length > 4 ? clean.substring(0, 3) + '****' : '****';
+    if (clean.length >= 4) {
+      return 'GEO-xxxxxx-' + clean.slice(-4);
+    }
+    return 'GEO-xxxxxx-29C7';
   }
 
   async function _sha256Hex(str) {
@@ -470,14 +471,14 @@
     return parts[2] === expectedChk;
   }
 
-  // 注入右上角极微弱极小水印（脱敏，纯净授课）
+  // 注入【右上角】脱敏水印标签：显示如 GEO-xxxxxx-29C7
   function _injectWatermark(key) {
     if (document.getElementById('geo-watermark-tag')) return;
     const mark = document.createElement('div');
     mark.id = 'geo-watermark-tag';
-    mark.style.cssText = 'position:fixed;bottom:10px;right:14px;z-index:99999;display:flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(2,6,23,0.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(51,65,85,0.4);border-radius:9999px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;font-size:10px;color:rgba(148,163,184,0.65);letter-spacing:0.02em;pointer-events:none;user-select:none;';
-    mark.innerHTML = '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></span>' +
-                     '<span>已授权 · </span><span style="color:#94a3b8;font-weight:600;">' + _maskKey(key) + '</span>';
+    mark.style.cssText = 'position:fixed;top:10px;right:14px;z-index:99999;display:flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(2,6,23,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(51,65,85,0.6);border-radius:9999px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;font-size:11px;color:rgba(148,163,184,0.85);letter-spacing:0.03em;pointer-events:none;user-select:none;box-shadow:0 4px 12px rgba(0,0,0,0.4);';
+    mark.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>' +
+                     '<span>正版授权 · </span><span style="color:#f59e0b;font-weight:700;">' + _formatWatermarkKey(key) + '</span>';
     document.body.appendChild(mark);
   }
 

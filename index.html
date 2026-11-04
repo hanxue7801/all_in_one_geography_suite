@@ -52,7 +52,7 @@
       </a>
     </div>
 
-    <!-- 授权状态状态栏：安全脱敏设计 -->
+    <!-- 授权状态状态栏：同样格式化为 GEO-xxxxxx-29C7 -->
     <div id="auth-status-bar" class="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex items-center justify-between text-xs text-slate-400">
       <div class="flex items-center gap-2">
         <span id="auth-icon">🔒</span>
@@ -94,17 +94,18 @@
     const SALT = 'GEO_PRO_2026_AUTHORIZE_SECRET';
     const MASTER_PINS = ['GEO888', 'TEACH2026', '668899'];
 
-    function maskKey(key) {
-      if (!key) return '';
+    function formatWatermarkKey(key) {
+      if (!key) return 'GEO-xxxxxx-AUTH';
       const clean = key.trim().toUpperCase();
-      if (MASTER_PINS.includes(clean)) return 'GEO-******';
+      if (MASTER_PINS.includes(clean)) return 'GEO-xxxxxx-8888';
       const parts = clean.split('-');
       if (parts.length === 3) {
-        const middle = parts[1];
-        const masked = middle.length > 2 ? middle.substring(0, 2) + '****' : '****';
-        return parts[0] + '-' + masked + '-' + parts[2];
+        return parts[0] + '-xxxxxx-' + parts[2];
       }
-      return clean.length > 4 ? clean.substring(0, 3) + '****' : '****';
+      if (clean.length >= 4) {
+        return 'GEO-xxxxxx-' + clean.slice(-4);
+      }
+      return 'GEO-xxxxxx-29C7';
     }
 
     async function sha256(str) {
@@ -137,7 +138,7 @@
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved && await verifyKey(saved)) {
         authIcon.innerText = '✅';
-        authText.innerHTML = '<span class="text-emerald-400 font-bold">正版授权已激活</span> <span class="text-slate-500 font-mono">(' + maskKey(saved) + ')</span>';
+        authText.innerHTML = '<span class="text-emerald-400 font-bold">正版授权已激活</span> · 凭证：<span class="font-mono text-amber-400 font-bold">' + formatWatermarkKey(saved) + '</span>';
         authBtn.innerText = '更换激活码';
         authBtn.className = 'px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition';
       } else {
