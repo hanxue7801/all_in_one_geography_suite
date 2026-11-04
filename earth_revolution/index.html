@@ -276,7 +276,7 @@
 
   <script>
 /* ========================================================================
- * 🔒 地球运动3D物理引擎（自转与公转双核心） - 商业授权保护与卡密激活控制系统
+ * 🔒 地球运动3D物理引擎（自转与公转双核心） - 商业授权保护与买家防录屏水印溯源系统
  * 版权所有 (C) 商业授课课件知识产权保护 · 未经授权严禁使用
  * ======================================================================== */
 (function() {
@@ -333,6 +333,17 @@
     return parts[2] === expectedChk;
   }
 
+  // 注入常驻防录屏版权溯源水印
+  function _injectWatermark(key) {
+    if (document.getElementById('geo-watermark-tag')) return;
+    const mark = document.createElement('div');
+    mark.id = 'geo-watermark-tag';
+    mark.style.cssText = 'position:fixed;bottom:12px;right:16px;z-index:99999;display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(2,6,23,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(51,65,85,0.6);border-radius:9999px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,monospace;font-size:11px;color:rgba(148,163,184,0.85);letter-spacing:0.04em;pointer-events:none;user-select:none;box-shadow:0 4px 12px rgba(0,0,0,0.4);';
+    mark.innerHTML = '<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>' +
+                     '<span>正版授权 · </span><span style="color:#f59e0b;font-weight:700;">' + key + '</span>';
+    document.body.appendChild(mark);
+  }
+
   function _injectAuthModal(onSuccess) {
     const modal = document.createElement('div');
     modal.id = 'geo-license-gate-modal';
@@ -375,18 +386,19 @@
     input.addEventListener('blur', () => { input.style.borderColor = '#334155'; });
 
     async function handleVerify() {
-      const key = input.value.trim();
+      const key = input.value.trim().toUpperCase();
       btn.innerText = '正在校验...';
       btn.style.opacity = '0.7';
       err.style.display = 'none';
 
       const valid = await _verifyLicenseKey(key);
       if (valid) {
-        localStorage.setItem(_AUTH_STORAGE_KEY, key.toUpperCase());
+        localStorage.setItem(_AUTH_STORAGE_KEY, key);
         modal.style.transition = 'opacity 0.3s ease';
         modal.style.opacity = '0';
         setTimeout(() => {
           modal.remove();
+          _injectWatermark(key);
           onSuccess();
         }, 300);
       } else {
@@ -12852,6 +12864,7 @@ RW5naW5lKCk7CiAgICB9Ow==`;
   async function _startApp() {
     const savedKey = localStorage.getItem(_AUTH_STORAGE_KEY);
     if (savedKey && await _verifyLicenseKey(savedKey)) {
+      _injectWatermark(savedKey.toUpperCase());
       _0xBootEngine();
     } else {
       _injectAuthModal(_0xBootEngine);

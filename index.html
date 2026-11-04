@@ -98,7 +98,7 @@
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved && await verifyKey(saved)) {
         authIcon.innerText = '✅';
-        authText.innerHTML = '<span class="text-emerald-400 font-bold">已成功激活正版授权</span> (' + saved + ')';
+        authText.innerHTML = '<span class="text-emerald-400 font-bold">正版授权已激活</span> · 凭证：<span class="font-mono text-amber-400 font-bold">' + saved + '</span>';
         authBtn.innerText = '更换激活码';
         authBtn.className = 'px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 font-medium transition';
       } else {
