@@ -1,2 +1,0 @@
-# all_in_one_geography_suite
-earth_revolution；solar_trajectory
